@@ -10,7 +10,6 @@ class DashboardController extends Controller
     {
         return view('dashboard');
         $events = Event::paginate(10); // Display 10 items per page
-        
         $search = $request->input('search');
         $events = Event::where('title', 'like', '%' . $search . '%')->paginate(10);
 
