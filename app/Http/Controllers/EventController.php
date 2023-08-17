@@ -11,6 +11,7 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
+
         return view('events.edit', compact('event'));
     }
 
@@ -29,9 +30,26 @@ class EventController extends Controller
         return redirect()->route('events.index');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $query = Event::query();
+
+        if ($request->input('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('title', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+
+        }
+        $events = $query->paginate(10);
+        if ($request->input('category_id')) {
+            $events = Category::find($request->input('category_id'))->events;
+        } else {
+            $events = Event::all();
+        }
+        $search = $request->input('search');
+        $events = Event::where('title', 'like', '%' . $search . '%')->paginate(10);
+
+        return view('events.index', compact('events'));
     }
 
     /**
@@ -51,10 +69,15 @@ class EventController extends Controller
             'date' => 'required|date',
             'time' => 'required',
             'location' => 'required|max:255'
+
+
         ]);
 
         $event = new Event($request->all());
         auth()->user()->events()->save($event);
+        if ($request->input('categories')) {
+            $event->categories()->sync($request->input('categories'));
+        }
 
         return redirect()->route('events.index');
     }

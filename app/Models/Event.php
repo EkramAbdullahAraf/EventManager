@@ -16,5 +16,9 @@ class Event extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class);
+    }
 
 }

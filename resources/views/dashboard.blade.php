@@ -17,7 +17,17 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                 </div>
+                <form method="GET" action="{{ route('events.index') }}">
+                    <div class="input-group mb-3">
+                        <input type="text" name="search" class="form-control" placeholder="Search for events..." value="{{ request('search') }}">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Search</button>
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
+
 </x-app-layout>
